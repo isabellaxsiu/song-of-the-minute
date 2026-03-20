@@ -21,7 +21,7 @@ export function useSongs() {
       // Fetch all songs (should be ≤720 rows for AM)
       const { data, error } = await supabase
         .from('songs')
-        .select('minute_of_day, name, artist, spotify_id')
+        .select('minute_of_day, name, artist, spotify_id, preview_url')
         .order('minute_of_day');
 
       if (error) {
