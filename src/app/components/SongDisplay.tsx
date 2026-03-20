@@ -1,38 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-
-interface Song {
-  name: string;
-  artist: string;
-}
-
-// Mock song data - generates a song for each minute of the day (1440 total)
-const generateSongForMinute = (minuteOfDay: number): Song => {
-  const songNames = [
-    'Midnight Dreams', 'Dawn Awakening', 'Morning Light', 'Sunrise Symphony',
-    'Golden Hour', 'Afternoon Breeze', 'Twilight Moments', 'Evening Glow',
-    'Starlit Nights', 'Cosmic Journey', 'Silent Reflections', 'Urban Pulse',
-    'Desert Winds', 'Ocean Waves', 'Mountain Echo', 'Forest Path',
-    'City Lights', 'Neon Dreams', 'Electric Sky', 'Velvet Moon'
-  ];
-  
-  const artists = [
-    'Luna Rivers', 'Sol Harmony', 'Echo Chamber', 'The Wanderers',
-    'Stellar Drift', 'Horizon Line', 'Midnight Society', 'Aurora Sound',
-    'Cosmic Waves', 'Urban Folk', 'The Dreamers', 'Sky Travelers',
-    'Ocean Collective', 'Mountain Soul', 'City Beats', 'Neon Pulse'
-  ];
-
-  // Use minute of day to deterministically select song and artist
-  const songIndex = minuteOfDay % songNames.length;
-  const artistIndex = Math.floor(minuteOfDay / songNames.length) % artists.length;
-  
-  return {
-    name: `${songNames[songIndex]} ${minuteOfDay}`,
-    artist: artists[artistIndex]
-  };
-};
+import { getSongForMinute, type Song } from '../data/songData';
 
 interface SongDisplayProps {
   selectedTimezone: string;
@@ -55,7 +24,7 @@ export function SongDisplay({
   setCurrentViewIndex,
   isDarkBackground
 }: SongDisplayProps) {
-  const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '' });
+  const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '', spotifyId: '' });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [actualCurrentMinute, setActualCurrentMinute] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -80,7 +49,7 @@ export function SongDisplay({
       // Calculate minute of day (0-1439)
       const minuteOfDay = hour * 60 + minute;
       
-      setCurrentSong(generateSongForMinute(minuteOfDay));
+      setCurrentSong(getSongForMinute(minuteOfDay));
       setActualCurrentMinute(minuteOfDay);
       
       // In radio mode, sync the index and trigger animation
@@ -192,9 +161,9 @@ export function SongDisplay({
   }, [currentIndex, setCurrentViewIndex]);
 
   // Get songs for carousel
-  const getPrevSong = () => generateSongForMinute((currentIndex - 1 + 1440) % 1440);
-  const getCurrentSong = () => mode === 'radio' ? currentSong : generateSongForMinute(currentIndex);
-  const getNextSong = () => generateSongForMinute((currentIndex + 1) % 1440);
+  const getPrevSong = () => getSongForMinute((currentIndex - 1 + 1440) % 1440);
+  const getCurrentSong = () => mode === 'radio' ? currentSong : getSongForMinute(currentIndex);
+  const getNextSong = () => getSongForMinute((currentIndex + 1) % 1440);
 
   const slideVariants = {
     enter: (direction: number) => ({
