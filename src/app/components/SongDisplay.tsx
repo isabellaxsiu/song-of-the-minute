@@ -25,6 +25,7 @@ export function SongDisplay({
   setCurrentViewIndex,
   isDarkBackground
 }: SongDisplayProps) {
+  const { getSong } = useSongs();
   const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '', spotifyId: '' });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [actualCurrentMinute, setActualCurrentMinute] = useState(0);
