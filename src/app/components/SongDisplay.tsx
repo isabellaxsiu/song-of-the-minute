@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { getSongForMinute, type Song } from '../data/songData';
+import { type Song } from '../data/songData';
+import { useSongs } from '../hooks/useSongs';
 
 interface SongDisplayProps {
   selectedTimezone: string;
@@ -24,6 +25,7 @@ export function SongDisplay({
   setCurrentViewIndex,
   isDarkBackground
 }: SongDisplayProps) {
+  const { getSong } = useSongs();
   const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '', spotifyId: '' });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [actualCurrentMinute, setActualCurrentMinute] = useState(0);
@@ -49,7 +51,7 @@ export function SongDisplay({
       // Calculate minute of day (0-1439)
       const minuteOfDay = hour * 60 + minute;
       
-      setCurrentSong(getSongForMinute(minuteOfDay));
+      setCurrentSong(getSong(minuteOfDay));
       setActualCurrentMinute(minuteOfDay);
       
       // In radio mode, sync the index and trigger animation
@@ -161,9 +163,9 @@ export function SongDisplay({
   }, [currentIndex, setCurrentViewIndex]);
 
   // Get songs for carousel
-  const getPrevSong = () => getSongForMinute((currentIndex - 1 + 1440) % 1440);
-  const getCurrentSong = () => mode === 'radio' ? currentSong : getSongForMinute(currentIndex);
-  const getNextSong = () => getSongForMinute((currentIndex + 1) % 1440);
+  const getPrevSong = () => getSong((currentIndex - 1 + 1440) % 1440);
+  const getCurrentSong = () => mode === 'radio' ? currentSong : getSong(currentIndex);
+  const getNextSong = () => getSong((currentIndex + 1) % 1440);
 
   const slideVariants = {
     enter: (direction: number) => ({
