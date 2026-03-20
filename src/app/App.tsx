@@ -174,8 +174,8 @@ export default function App() {
       const minute = getPlayMinute();
       if (mode === 'custom') setPlayingSongIndex(minute);
       const song = getSong(minute);
-      if (song.previewUrl) {
-        play(song.previewUrl);
+      if (song.spotifyId) {
+        play(song.spotifyId);
       }
     } else {
       pause();
