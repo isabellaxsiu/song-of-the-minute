@@ -14,7 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      songs: {
+        Row: {
+          artist: string
+          created_at: string
+          id: string
+          minute_of_day: number
+          name: string
+          spotify_id: string
+        }
+        Insert: {
+          artist: string
+          created_at?: string
+          id?: string
+          minute_of_day: number
+          name: string
+          spotify_id?: string
+        }
+        Update: {
+          artist?: string
+          created_at?: string
+          id?: string
+          minute_of_day?: number
+          name?: string
+          spotify_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
