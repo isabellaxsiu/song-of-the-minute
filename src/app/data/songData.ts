@@ -2,6 +2,7 @@ export interface Song {
   name: string;
   artist: string;
   spotifyId: string;
+  previewUrl: string | null;
 }
 
 /**
