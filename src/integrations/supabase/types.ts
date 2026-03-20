@@ -21,6 +21,7 @@ export type Database = {
           id: string
           minute_of_day: number
           name: string
+          preview_url: string | null
           spotify_id: string
         }
         Insert: {
@@ -29,6 +30,7 @@ export type Database = {
           id?: string
           minute_of_day: number
           name: string
+          preview_url?: string | null
           spotify_id?: string
         }
         Update: {
@@ -37,6 +39,7 @@ export type Database = {
           id?: string
           minute_of_day?: number
           name?: string
+          preview_url?: string | null
           spotify_id?: string
         }
         Relationships: []

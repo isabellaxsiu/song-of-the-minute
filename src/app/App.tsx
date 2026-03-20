@@ -3,6 +3,8 @@ import { Play, Pause } from 'lucide-react';
 import { TimeDisplay } from './components/TimeDisplay';
 import { SongDisplay } from './components/SongDisplay';
 import { ModeToggle } from './components/ModeToggle';
+import { useAudioPlayer } from './hooks/useAudioPlayer';
+import { useSongs } from './hooks/useSongs';
 
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -12,6 +14,8 @@ export default function App() {
   const [playingSongIndex, setPlayingSongIndex] = useState<number | null>(null);
   const [currentViewIndex, setCurrentViewIndex] = useState(0);
   const [isDarkBackground, setIsDarkBackground] = useState(false);
+  const { play, pause, onEnded } = useAudioPlayer();
+  const { getSong } = useSongs();
 
   useEffect(() => {
     const updateGradient = () => {
@@ -142,23 +146,47 @@ export default function App() {
     return () => clearInterval(interval);
   }, [selectedTimezone]);
 
+  // Handle audio ended - stop playing state
+  useEffect(() => {
+    onEnded(() => {
+      setIsPlaying(false);
+      setPlayingSongIndex(null);
+    });
+  }, [onEnded]);
+
+  // Helper to get the minute index to play
+  const getPlayMinute = (): number => {
+    if (mode === 'custom') return currentViewIndex;
+    // Radio mode: current minute
+    const now = new Date();
+    const timeString = now.toLocaleString('en-US', {
+      hour: 'numeric', minute: 'numeric', hour12: false, timeZone: selectedTimezone,
+    });
+    const [h, m] = timeString.split(':').map(Number);
+    return h * 60 + m;
+  };
+
   const handleToggle = () => {
     const newPlayingState = !isPlaying;
     setIsPlaying(newPlayingState);
     
-    // In custom mode, when starting to play, set the playing song index to current view
-    if (mode === 'custom' && newPlayingState) {
-      setPlayingSongIndex(currentViewIndex);
-    } else if (!newPlayingState) {
-      // When pausing, clear the playing song index
+    if (newPlayingState) {
+      const minute = getPlayMinute();
+      if (mode === 'custom') setPlayingSongIndex(minute);
+      const song = getSong(minute);
+      if (song.spotifyId) {
+        play(song.spotifyId);
+      }
+    } else {
+      pause();
       setPlayingSongIndex(null);
     }
   };
 
   const handleModeChange = (newMode: 'radio' | 'custom') => {
     setMode(newMode);
-    // Pause when switching modes
     if (isPlaying) {
+      pause();
       setIsPlaying(false);
       setPlayingSongIndex(null);
     }

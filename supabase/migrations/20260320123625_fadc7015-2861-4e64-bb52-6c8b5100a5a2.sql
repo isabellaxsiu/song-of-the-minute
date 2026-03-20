@@ -1,0 +1,1 @@
+ALTER TABLE public.songs ADD COLUMN preview_url text DEFAULT NULL;
