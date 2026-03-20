@@ -51,7 +51,7 @@ export function SongDisplay({
       // Calculate minute of day (0-1439)
       const minuteOfDay = hour * 60 + minute;
       
-      setCurrentSong(getSongForMinute(minuteOfDay));
+      setCurrentSong(getSong(minuteOfDay));
       setActualCurrentMinute(minuteOfDay);
       
       // In radio mode, sync the index and trigger animation
