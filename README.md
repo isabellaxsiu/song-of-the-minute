@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# My Project
 
-TODO: Document your project here
+A blank project ready for development.
