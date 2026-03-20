@@ -14,6 +14,8 @@ export default function App() {
   const [playingSongIndex, setPlayingSongIndex] = useState<number | null>(null);
   const [currentViewIndex, setCurrentViewIndex] = useState(0);
   const [isDarkBackground, setIsDarkBackground] = useState(false);
+  const { play, pause, onEnded } = useAudioPlayer();
+  const { getSong } = useSongs();
 
   useEffect(() => {
     const updateGradient = () => {
