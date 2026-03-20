@@ -14,8 +14,7 @@ export default defineConfig({
     },
   },
   assetsInclude: ['**/*.svg', '**/*.csv'],
-  // Force cache bust
-  server: {
+  optimizeDeps: {
     force: true,
   },
 })
