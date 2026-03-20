@@ -34,6 +34,7 @@ export function useSongs() {
           name: row.name,
           artist: row.artist,
           spotifyId: row.spotify_id,
+          previewUrl: row.preview_url,
         });
       }
       allSongsLoaded = true;

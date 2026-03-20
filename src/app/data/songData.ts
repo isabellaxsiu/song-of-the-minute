@@ -19,5 +19,6 @@ export function getPlaceholderSong(minuteOfDay: number): Song {
     name: `Song of ${timeStr}`,
     artist: 'Coming Soon',
     spotifyId: '',
+    previewUrl: null,
   };
 }
