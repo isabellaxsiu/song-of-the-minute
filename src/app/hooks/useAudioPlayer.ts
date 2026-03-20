@@ -1,39 +1,55 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 
 /**
- * Hook that manages HTML5 Audio playback of Spotify 30-second preview clips.
+ * Hook that manages playback via a hidden Spotify embed iframe.
+ * Uses Spotify's embed URL which allows playback for logged-in Spotify users.
  */
 export function useAudioPlayer() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
 
   useEffect(() => {
-    audioRef.current = new Audio();
-    audioRef.current.volume = 0.7;
+    // Create a hidden iframe for Spotify embeds
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.allow = 'encrypted-media; autoplay';
+    document.body.appendChild(iframe);
+    iframeRef.current = iframe;
+
     return () => {
-      audioRef.current?.pause();
-      audioRef.current = null;
+      iframe.remove();
+      iframeRef.current = null;
     };
   }, []);
 
-  const play = useCallback((previewUrl: string) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.src !== previewUrl) {
-      audio.src = previewUrl;
-    }
-    audio.play().catch((e) => console.warn('Playback blocked:', e));
+  const play = useCallback((spotifyId: string) => {
+    if (!spotifyId || !iframeRef.current) return;
+    setCurrentTrackId(spotifyId);
+    // Use Spotify embed with autoplay
+    iframeRef.current.src = `https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`;
+    iframeRef.current.style.display = 'block';
+    iframeRef.current.style.position = 'fixed';
+    iframeRef.current.style.bottom = '0';
+    iframeRef.current.style.left = '0';
+    iframeRef.current.style.right = '0';
+    iframeRef.current.style.width = '100%';
+    iframeRef.current.style.height = '80px';
+    iframeRef.current.style.zIndex = '50';
+    iframeRef.current.style.border = 'none';
   }, []);
 
   const pause = useCallback(() => {
-    audioRef.current?.pause();
+    if (iframeRef.current) {
+      iframeRef.current.src = '';
+      iframeRef.current.style.display = 'none';
+    }
+    setCurrentTrackId(null);
   }, []);
 
-  const onEnded = useCallback((cb: () => void) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.onended = cb;
+  const onEnded = useCallback((_cb: () => void) => {
+    // Spotify embed doesn't expose an ended event easily
+    // The user will need to press pause manually
   }, []);
 
-  return { play, pause, onEnded };
+  return { play, pause, onEnded, currentTrackId };
 }
