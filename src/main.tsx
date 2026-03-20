@@ -3,6 +3,4 @@
   import App from "./app/App.tsx";
   import "./styles/index.css";
 
-  // Force reload
   createRoot(document.getElementById("root")!).render(<App />);
-  
