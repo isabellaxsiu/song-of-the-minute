@@ -161,9 +161,9 @@ export function SongDisplay({
   }, [currentIndex, setCurrentViewIndex]);
 
   // Get songs for carousel
-  const getPrevSong = () => generateSongForMinute((currentIndex - 1 + 1440) % 1440);
-  const getCurrentSong = () => mode === 'radio' ? currentSong : generateSongForMinute(currentIndex);
-  const getNextSong = () => generateSongForMinute((currentIndex + 1) % 1440);
+  const getPrevSong = () => getSongForMinute((currentIndex - 1 + 1440) % 1440);
+  const getCurrentSong = () => mode === 'radio' ? currentSong : getSongForMinute(currentIndex);
+  const getNextSong = () => getSongForMinute((currentIndex + 1) % 1440);
 
   const slideVariants = {
     enter: (direction: number) => ({
