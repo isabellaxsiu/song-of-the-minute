@@ -1,38 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-
-interface Song {
-  name: string;
-  artist: string;
-}
-
-// Mock song data - generates a song for each minute of the day (1440 total)
-const generateSongForMinute = (minuteOfDay: number): Song => {
-  const songNames = [
-    'Midnight Dreams', 'Dawn Awakening', 'Morning Light', 'Sunrise Symphony',
-    'Golden Hour', 'Afternoon Breeze', 'Twilight Moments', 'Evening Glow',
-    'Starlit Nights', 'Cosmic Journey', 'Silent Reflections', 'Urban Pulse',
-    'Desert Winds', 'Ocean Waves', 'Mountain Echo', 'Forest Path',
-    'City Lights', 'Neon Dreams', 'Electric Sky', 'Velvet Moon'
-  ];
-  
-  const artists = [
-    'Luna Rivers', 'Sol Harmony', 'Echo Chamber', 'The Wanderers',
-    'Stellar Drift', 'Horizon Line', 'Midnight Society', 'Aurora Sound',
-    'Cosmic Waves', 'Urban Folk', 'The Dreamers', 'Sky Travelers',
-    'Ocean Collective', 'Mountain Soul', 'City Beats', 'Neon Pulse'
-  ];
-
-  // Use minute of day to deterministically select song and artist
-  const songIndex = minuteOfDay % songNames.length;
-  const artistIndex = Math.floor(minuteOfDay / songNames.length) % artists.length;
-  
-  return {
-    name: `${songNames[songIndex]} ${minuteOfDay}`,
-    artist: artists[artistIndex]
-  };
-};
+import { getSongForMinute, type Song } from '../data/songData';
 
 interface SongDisplayProps {
   selectedTimezone: string;
