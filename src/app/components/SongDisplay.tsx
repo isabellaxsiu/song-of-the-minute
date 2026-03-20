@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { getSongForMinute, type Song } from '../data/songData';
+import { type Song } from '../data/songData';
+import { useSongs } from '../hooks/useSongs';
 
 interface SongDisplayProps {
   selectedTimezone: string;
