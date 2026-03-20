@@ -146,23 +146,47 @@ export default function App() {
     return () => clearInterval(interval);
   }, [selectedTimezone]);
 
+  // Handle audio ended - stop playing state
+  useEffect(() => {
+    onEnded(() => {
+      setIsPlaying(false);
+      setPlayingSongIndex(null);
+    });
+  }, [onEnded]);
+
+  // Helper to get the minute index to play
+  const getPlayMinute = (): number => {
+    if (mode === 'custom') return currentViewIndex;
+    // Radio mode: current minute
+    const now = new Date();
+    const timeString = now.toLocaleString('en-US', {
+      hour: 'numeric', minute: 'numeric', hour12: false, timeZone: selectedTimezone,
+    });
+    const [h, m] = timeString.split(':').map(Number);
+    return h * 60 + m;
+  };
+
   const handleToggle = () => {
     const newPlayingState = !isPlaying;
     setIsPlaying(newPlayingState);
     
-    // In custom mode, when starting to play, set the playing song index to current view
-    if (mode === 'custom' && newPlayingState) {
-      setPlayingSongIndex(currentViewIndex);
-    } else if (!newPlayingState) {
-      // When pausing, clear the playing song index
+    if (newPlayingState) {
+      const minute = getPlayMinute();
+      if (mode === 'custom') setPlayingSongIndex(minute);
+      const song = getSong(minute);
+      if (song.previewUrl) {
+        play(song.previewUrl);
+      }
+    } else {
+      pause();
       setPlayingSongIndex(null);
     }
   };
 
   const handleModeChange = (newMode: 'radio' | 'custom') => {
     setMode(newMode);
-    // Pause when switching modes
     if (isPlaying) {
+      pause();
       setIsPlaying(false);
       setPlayingSongIndex(null);
     }
