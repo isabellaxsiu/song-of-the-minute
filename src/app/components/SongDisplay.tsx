@@ -24,7 +24,8 @@ export function SongDisplay({
   setPlayingSongIndex,
   currentViewIndex,
   setCurrentViewIndex,
-  isDarkBackground
+  isDarkBackground,
+  onSongCardClick
 }: SongDisplayProps) {
   const { getSong } = useSongs();
   const isMobile = useIsMobile();
