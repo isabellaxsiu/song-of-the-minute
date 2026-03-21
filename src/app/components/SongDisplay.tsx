@@ -232,10 +232,10 @@ export function SongDisplay({
                 : 'bg-white/10 border-white/20'
             }`}>
               <div className="text-center">
-                <div className="text-white/90 font-medium text-lg mb-1 break-words">
+                <div className="text-white/90 font-medium mb-1" style={{ textWrap: 'balance', fontSize: getCurrentSong().name.length > 25 ? '0.875rem' : '1.125rem', lineHeight: getCurrentSong().name.length > 25 ? '1.25rem' : '1.75rem' }}>
                   {getCurrentSong().name}
                 </div>
-                <div className="text-white/60 text-sm break-words">
+                <div className="text-white/60 text-sm" style={{ textWrap: 'balance' }}>
                   {getCurrentSong().artist}
                 </div>
               </div>
