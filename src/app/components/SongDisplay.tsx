@@ -158,7 +158,7 @@ export function SongDisplay({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          className="absolute -top-10 left-1/2 -translate-x-1/2"
+          className="absolute -top-14 left-1/2 -translate-x-1/2"
         >
           <button
             onClick={handleBackToCurrentSong}
