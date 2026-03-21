@@ -34,7 +34,7 @@ export function ModeToggle({ mode, onModeChange, isDarkBackground }: ModeToggleP
               : 'text-white/60 hover:text-white/80'
           }`}
         >
-          Custom
+          Browse
         </button>
       </div>
     </div>
