@@ -98,7 +98,7 @@ export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackgrou
       {/* Time Display */}
       <div className="text-white/90 mb-3 text-center md:text-right">
         <div className="text-3xl font-mono font-light tracking-widest tabular-nums">
-          {formatTime(currentTime, selectedTz.code)}
+          {formatTime(currentTime, selectedTimezone)}
         </div>
       </div>
 
