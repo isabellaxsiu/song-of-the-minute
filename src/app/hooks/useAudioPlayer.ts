@@ -132,31 +132,26 @@ export function useAudioPlayer() {
 
         controller.addListener('playback_update', (e: any) => {
           if (!e) return;
-          const { isPaused } = e.data;
+          const { isPaused, position } = e.data;
 
           if (!isPaused) {
-            if (!wasPlayingRef.current) {
-              // Playback just started
-              wasPlayingRef.current = true;
-              endedRef.current = false;
-              playStartTimeRef.current = Date.now();
-              clearFallbackTimer();
-              fallbackTimerRef.current = setTimeout(() => {
-                handlePlaybackEnded();
-              }, 29000);
-            }
+            wasPlayingRef.current = true;
+            endedRef.current = false;
             setIsActuallyPlaying(true);
-          } else if (isPaused && wasPlayingRef.current) {
-            // Only count as ended if we've been playing for at least 2 seconds
-            // (avoids false triggers from initial buffering events)
-            const elapsed = Date.now() - playStartTimeRef.current;
-            if (elapsed > 2000) {
-              handlePlaybackEnded();
-            }
+          } else if (isPaused && wasPlayingRef.current && position > 0) {
+            // Genuine end: was playing, now paused, position advanced
+            handlePlaybackEnded();
           }
+          // Ignore isPaused with position === 0 (initial buffering or reset)
         });
 
         controller.addListener('ready', () => {
+          // Set fallback timer when embed is ready
+          clearFallbackTimer();
+          endedRef.current = false;
+          fallbackTimerRef.current = setTimeout(() => {
+            handlePlaybackEnded();
+          }, 29000);
           controller.play();
         });
       }
