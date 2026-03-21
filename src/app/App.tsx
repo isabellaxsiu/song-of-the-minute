@@ -188,14 +188,6 @@ export default function App() {
     }
   };
 
-  const handleModeChange = (newMode: 'radio' | 'custom') => {
-    setMode(newMode);
-    if (isPlaying) {
-      pause();
-      setIsPlaying(false);
-      setPlayingSongIndex(null);
-    }
-  };
 
   return (
     <div className={`size-full flex flex-col items-center justify-center bg-gradient-to-br ${gradientColors.from} ${gradientColors.to} transition-colors duration-1000`}>
