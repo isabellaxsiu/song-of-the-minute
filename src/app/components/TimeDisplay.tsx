@@ -49,23 +49,7 @@ export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackgrou
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const selectedItemRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    // Detect user's timezone on mount
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const matchedTimezone = timezones.find(tz => tz.code === userTimezone);
-    
-    if (matchedTimezone) {
-      setSelectedTz(matchedTimezone);
-      onTimezoneChange(matchedTimezone.code);
-    } else {
-      // Default to UTC if timezone not found in list
-      const utcTimezone = timezones.find(tz => tz.code === 'UTC');
-      if (utcTimezone) {
-        setSelectedTz(utcTimezone);
-        onTimezoneChange(utcTimezone.code);
-      }
-    }
-  }, []);
+  // No need to detect timezone here - the parent App component handles detection
 
   useEffect(() => {
     // Update local state when prop changes
