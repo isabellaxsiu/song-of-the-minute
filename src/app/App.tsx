@@ -15,7 +15,7 @@ export default function App() {
       return 'UTC';
     }
   });
-  const [mode, setMode] = useState<'radio' | 'custom'>('radio');
+  const mode = 'custom' as const;
   const [playingSongIndex, setPlayingSongIndex] = useState<number | null>(null);
   const [currentViewIndex, setCurrentViewIndex] = useState(0);
   const [isDarkBackground, setIsDarkBackground] = useState(false);
