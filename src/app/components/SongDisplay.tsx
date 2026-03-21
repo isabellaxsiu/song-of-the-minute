@@ -368,34 +368,36 @@ export function SongDisplay({
   return (
     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-full max-w-[900px] px-4 pb-4">
       <div className="flex items-center justify-center gap-4">
-        {/* Left Song Card (Staggered) - Animated */}
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.div
-            key={`radio-prev-${currentIndex}`}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="flex-shrink-0 w-[200px] opacity-40 scale-90"
-          >
-            <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
-              isDarkBackground
-                ? 'bg-white/5 border-white/15'
-                : 'bg-white/10 border-white/20'
-            }`}>
-              <div className="text-center">
-                <div className="text-white/90 font-medium text-sm mb-1 truncate">
-                  {getPrevSong().name}
-                </div>
-                <div className="text-white/60 text-xs truncate">
-                  {getPrevSong().artist}
+        {/* Left Song Card - Hidden on mobile */}
+        {!isMobile && (
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={`radio-prev-${currentIndex}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 w-[200px] opacity-40 scale-90"
+            >
+              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+                isDarkBackground
+                  ? 'bg-white/5 border-white/15'
+                  : 'bg-white/10 border-white/20'
+              }`}>
+                <div className="text-center">
+                  <div className="text-white/90 font-medium text-sm mb-1 truncate">
+                    {getPrevSong().name}
+                  </div>
+                  <div className="text-white/60 text-xs truncate">
+                    {getPrevSong().artist}
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        )}
 
         {/* Center Song Card - Animated */}
         <AnimatePresence initial={false} custom={direction} mode="wait">
