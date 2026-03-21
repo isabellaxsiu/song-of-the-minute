@@ -223,9 +223,9 @@ export function SongDisplay({
           {/* Left Arrow Button */}
           <button
             onClick={handlePrevious}
-            className={`absolute -left-2 md:left-0 z-30 p-2 rounded-full transition-all duration-200 ${
+            className={`absolute -left-2 md:left-0 z-30 p-2 rounded-full transition-all duration-200 text-white ${
               isMobile
-                ? 'text-white/70 hover:text-white/90'
+                ? 'hover:text-white/90'
                 : isDarkBackground
                   ? 'backdrop-blur-md bg-white/5 border border-white/15 hover:bg-white/10'
                   : 'backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/20'
