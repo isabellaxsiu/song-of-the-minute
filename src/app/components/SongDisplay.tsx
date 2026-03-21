@@ -223,14 +223,16 @@ export function SongDisplay({
           {/* Left Arrow Button */}
           <button
             onClick={handlePrevious}
-            className={`absolute left-0 z-30 p-2 rounded-full backdrop-blur-md border transition-all duration-200 ${
-              isDarkBackground
-                ? 'bg-white/5 border-white/15 hover:bg-white/10'
-                : 'bg-white/10 border-white/20 hover:bg-white/20'
+            className={`absolute -left-2 md:left-0 z-30 p-2 rounded-full transition-all duration-200 ${
+              isMobile
+                ? 'text-white/70 hover:text-white/90'
+                : isDarkBackground
+                  ? 'backdrop-blur-md bg-white/5 border border-white/15 hover:bg-white/10'
+                  : 'backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/20'
             }`}
             aria-label="Previous song"
           >
-            <ChevronLeft className="w-5 h-5 text-white/90" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
 
           {/* Carousel Container */}
