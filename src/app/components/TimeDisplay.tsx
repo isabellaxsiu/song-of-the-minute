@@ -110,16 +110,16 @@ export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackgrou
   };
 
   return (
-    <div className="absolute top-8 right-8 z-20">
+    <div className="absolute top-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-20">
       {/* Time Display */}
-      <div className="text-white/90 mb-3 text-right">
+      <div className="text-white/90 mb-3 text-center md:text-right">
         <div className="text-3xl font-mono font-light tracking-widest tabular-nums">
           {formatTime(currentTime, selectedTz.code)}
         </div>
       </div>
 
       {/* Timezone Selector */}
-      <div className="relative flex justify-end">
+      <div className="relative flex justify-center md:justify-end">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors group"

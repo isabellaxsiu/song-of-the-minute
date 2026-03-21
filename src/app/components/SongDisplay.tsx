@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { type Song } from '../data/songData';
 import { useSongs } from '../hooks/useSongs';
+import { useIsMobile } from '../components/ui/use-mobile';
 
 interface SongDisplayProps {
   selectedTimezone: string;
@@ -26,6 +27,7 @@ export function SongDisplay({
   isDarkBackground
 }: SongDisplayProps) {
   const { getSong } = useSongs();
+  const isMobile = useIsMobile();
   const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '', spotifyId: '', previewUrl: null });
   const [currentIndex, setCurrentIndex] = useState(0);
   const [actualCurrentMinute, setActualCurrentMinute] = useState(0);
@@ -233,41 +235,43 @@ export function SongDisplay({
 
           {/* Carousel Container */}
           <div className="flex items-center justify-center gap-4 px-12">
-            {/* Left Song Card (Staggered) */}
-            <motion.button
-              key={`prev-${currentIndex}`}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.3 }}
-              onClick={handlePrevious}
-              className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
-            >
-              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
-                isDarkBackground
-                  ? 'bg-white/5 border-white/15'
-                  : 'bg-white/10 border-white/20'
-              }`}>
-                <div className="text-center">
-                  <div className="text-white/90 font-medium text-sm mb-1 truncate">
-                    {getPrevSong().name}
-                  </div>
-                  <div className="text-white/60 text-xs truncate">
-                    {getPrevSong().artist}
-                  </div>
-                  {isPlaying && playingSongIndex === (currentIndex - 1 + 1440) % 1440 && (
-                    <div className="mt-2 flex items-center justify-center gap-1">
-                      <div className="w-1 h-2 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-1 h-4 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
-                      <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '450ms' }}></div>
+            {/* Left Song Card (Staggered) - Hidden on mobile */}
+            {!isMobile && (
+              <motion.button
+                key={`prev-${currentIndex}`}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.3 }}
+                onClick={handlePrevious}
+                className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
+              >
+                <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+                  isDarkBackground
+                    ? 'bg-white/5 border-white/15'
+                    : 'bg-white/10 border-white/20'
+                }`}>
+                  <div className="text-center">
+                    <div className="text-white/90 font-medium text-sm mb-1 truncate">
+                      {getPrevSong().name}
                     </div>
-                  )}
+                    <div className="text-white/60 text-xs truncate">
+                      {getPrevSong().artist}
+                    </div>
+                    {isPlaying && playingSongIndex === (currentIndex - 1 + 1440) % 1440 && (
+                      <div className="mt-2 flex items-center justify-center gap-1">
+                        <div className="w-1 h-2 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-1 h-4 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '450ms' }}></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </motion.button>
+              </motion.button>
+            )}
 
             {/* Center Song Card */}
             <motion.div
@@ -304,41 +308,43 @@ export function SongDisplay({
               </div>
             </motion.div>
 
-            {/* Right Song Card (Staggered) */}
-            <motion.button
-              key={`next-${currentIndex}`}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.3 }}
-              onClick={handleNext}
-              className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
-            >
-              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
-                isDarkBackground
-                  ? 'bg-white/5 border-white/15'
-                  : 'bg-white/10 border-white/20'
-              }`}>
-                <div className="text-center">
-                  <div className="text-white/90 font-medium text-sm mb-1 truncate">
-                    {getNextSong().name}
-                  </div>
-                  <div className="text-white/60 text-xs truncate">
-                    {getNextSong().artist}
-                  </div>
-                  {isPlaying && playingSongIndex === (currentIndex + 1) % 1440 && (
-                    <div className="mt-2 flex items-center justify-center gap-1">
-                      <div className="w-1 h-2 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-1 h-4 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
-                      <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '450ms' }}></div>
+            {/* Right Song Card (Staggered) - Hidden on mobile */}
+            {!isMobile && (
+              <motion.button
+                key={`next-${currentIndex}`}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.3 }}
+                onClick={handleNext}
+                className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
+              >
+                <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+                  isDarkBackground
+                    ? 'bg-white/5 border-white/15'
+                    : 'bg-white/10 border-white/20'
+                }`}>
+                  <div className="text-center">
+                    <div className="text-white/90 font-medium text-sm mb-1 truncate">
+                      {getNextSong().name}
                     </div>
-                  )}
+                    <div className="text-white/60 text-xs truncate">
+                      {getNextSong().artist}
+                    </div>
+                    {isPlaying && playingSongIndex === (currentIndex + 1) % 1440 && (
+                      <div className="mt-2 flex items-center justify-center gap-1">
+                        <div className="w-1 h-2 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-1 h-4 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '450ms' }}></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </motion.button>
+              </motion.button>
+            )}
           </div>
 
           {/* Right Arrow Button */}
@@ -362,34 +368,36 @@ export function SongDisplay({
   return (
     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 w-full max-w-[900px] px-4 pb-4">
       <div className="flex items-center justify-center gap-4">
-        {/* Left Song Card (Staggered) - Animated */}
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.div
-            key={`radio-prev-${currentIndex}`}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="flex-shrink-0 w-[200px] opacity-40 scale-90"
-          >
-            <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
-              isDarkBackground
-                ? 'bg-white/5 border-white/15'
-                : 'bg-white/10 border-white/20'
-            }`}>
-              <div className="text-center">
-                <div className="text-white/90 font-medium text-sm mb-1 truncate">
-                  {getPrevSong().name}
-                </div>
-                <div className="text-white/60 text-xs truncate">
-                  {getPrevSong().artist}
+        {/* Left Song Card - Hidden on mobile */}
+        {!isMobile && (
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={`radio-prev-${currentIndex}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 w-[200px] opacity-40 scale-90"
+            >
+              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+                isDarkBackground
+                  ? 'bg-white/5 border-white/15'
+                  : 'bg-white/10 border-white/20'
+              }`}>
+                <div className="text-center">
+                  <div className="text-white/90 font-medium text-sm mb-1 truncate">
+                    {getPrevSong().name}
+                  </div>
+                  <div className="text-white/60 text-xs truncate">
+                    {getPrevSong().artist}
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        )}
 
         {/* Center Song Card - Animated */}
         <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -428,34 +436,36 @@ export function SongDisplay({
           </motion.div>
         </AnimatePresence>
 
-        {/* Right Song Card (Staggered) - Animated */}
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.div
-            key={`radio-next-${currentIndex}`}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3 }}
-            className="flex-shrink-0 w-[200px] opacity-40 scale-90"
-          >
-            <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
-              isDarkBackground
-                ? 'bg-white/5 border-white/15'
-                : 'bg-white/10 border-white/20'
-            }`}>
-              <div className="text-center">
-                <div className="text-white/90 font-medium text-sm mb-1 truncate">
-                  {getNextSong().name}
-                </div>
-                <div className="text-white/60 text-xs truncate">
-                  {getNextSong().artist}
+        {/* Right Song Card - Hidden on mobile */}
+        {!isMobile && (
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={`radio-next-${currentIndex}`}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3 }}
+              className="flex-shrink-0 w-[200px] opacity-40 scale-90"
+            >
+              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+                isDarkBackground
+                  ? 'bg-white/5 border-white/15'
+                  : 'bg-white/10 border-white/20'
+              }`}>
+                <div className="text-center">
+                  <div className="text-white/90 font-medium text-sm mb-1 truncate">
+                    {getNextSong().name}
+                  </div>
+                  <div className="text-white/60 text-xs truncate">
+                    {getNextSong().artist}
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        )}
       </div>
     </div>
   );
