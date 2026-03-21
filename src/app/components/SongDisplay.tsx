@@ -14,6 +14,7 @@ interface SongDisplayProps {
   currentViewIndex: number;
   setCurrentViewIndex: (index: number) => void;
   isDarkBackground: boolean;
+  onSongCardClick: (minuteIndex: number) => void;
 }
 
 export function SongDisplay({ 
