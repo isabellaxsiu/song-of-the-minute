@@ -203,18 +203,8 @@ export default function App() {
         />
       </div>
 
-      {/* Desktop: Mode Toggle top-left */}
-      <div className="hidden md:block absolute top-8 left-8 z-20">
-        <ModeToggle
-          mode={mode}
-          onModeChange={handleModeChange}
-          isDarkBackground={isDarkBackground}
-        />
-      </div>
-
-      {/* Center content: play button + mobile toggle below */}
-      <div className="relative z-10 flex flex-col items-center gap-6">
-        {/* Glass-effect play button */}
+      {/* Center content: play button */}
+      <div className="relative z-10 flex flex-col items-center">
         <button
           onClick={handleToggle}
           className="group"
@@ -232,15 +222,6 @@ export default function App() {
             )}
           </div>
         </button>
-
-        {/* Mobile: Mode Toggle below play button */}
-        <div className="md:hidden">
-          <ModeToggle
-            mode={mode}
-            onModeChange={handleModeChange}
-            isDarkBackground={isDarkBackground}
-          />
-        </div>
       </div>
 
       {/* Song Display */}
