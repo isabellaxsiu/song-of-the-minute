@@ -132,12 +132,6 @@ export function useAudioPlayer() {
             onPlaybackEndRef.current?.();
           } else {
             setIsActuallyPlaying(true);
-            // Restart fallback timer on resume
-            clearEndTimer();
-            endTimerRef.current = setTimeout(() => {
-              setIsActuallyPlaying(false);
-              onPlaybackEndRef.current?.();
-            }, 29000);
           }
         });
       }
