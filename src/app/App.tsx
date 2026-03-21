@@ -151,17 +151,13 @@ export default function App() {
     return () => clearInterval(interval);
   }, [selectedTimezone]);
 
-  // Sync play button state with actual Spotify playback
-  useEffect(() => {
-    onEnded(() => {
-      setIsPlaying(false);
-      setPlayingSongIndex(null);
-    });
-  }, [onEnded]);
-
-  // Keep isPlaying in sync with actual playback state
+  // Keep isPlaying in sync with actual Spotify playback state
   useEffect(() => {
     setIsPlaying(isActuallyPlaying);
+    if (!isActuallyPlaying && playingSongIndex !== null) {
+      // Playback stopped (ended or paused in embed)
+      setPlayingSongIndex(null);
+    }
   }, [isActuallyPlaying]);
 
   // Helper to get the minute index to play
