@@ -151,13 +151,18 @@ export default function App() {
     return () => clearInterval(interval);
   }, [selectedTimezone]);
 
-  // Handle audio ended - stop playing state
+  // Sync play button state with actual Spotify playback
   useEffect(() => {
     onEnded(() => {
       setIsPlaying(false);
       setPlayingSongIndex(null);
     });
   }, [onEnded]);
+
+  // Keep isPlaying in sync with actual playback state
+  useEffect(() => {
+    setIsPlaying(isActuallyPlaying);
+  }, [isActuallyPlaying]);
 
   // Helper to get the minute index to play
   const getPlayMinute = (): number => {
