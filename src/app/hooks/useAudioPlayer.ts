@@ -111,6 +111,8 @@ export function useAudioPlayer() {
     container.innerHTML = '';
     container.style.display = 'block';
     wasPlayingRef.current = false;
+    endedRef.current = false;
+    playStartTimeRef.current = 0;
     clearFallbackTimer();
 
     // Create an element for the embed
