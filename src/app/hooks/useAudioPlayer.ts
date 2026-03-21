@@ -186,6 +186,7 @@ export function useAudioPlayer() {
       containerRef.current.innerHTML = '';
     }
     wasPlayingRef.current = false;
+    endedRef.current = false;
     setCurrentTrackId(null);
     setIsActuallyPlaying(false);
   }, []);
