@@ -308,41 +308,43 @@ export function SongDisplay({
               </div>
             </motion.div>
 
-            {/* Right Song Card (Staggered) */}
-            <motion.button
-              key={`next-${currentIndex}`}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.3 }}
-              onClick={handleNext}
-              className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
-            >
-              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
-                isDarkBackground
-                  ? 'bg-white/5 border-white/15'
-                  : 'bg-white/10 border-white/20'
-              }`}>
-                <div className="text-center">
-                  <div className="text-white/90 font-medium text-sm mb-1 truncate">
-                    {getNextSong().name}
-                  </div>
-                  <div className="text-white/60 text-xs truncate">
-                    {getNextSong().artist}
-                  </div>
-                  {isPlaying && playingSongIndex === (currentIndex + 1) % 1440 && (
-                    <div className="mt-2 flex items-center justify-center gap-1">
-                      <div className="w-1 h-2 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
-                      <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
-                      <div className="w-1 h-4 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
-                      <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '450ms' }}></div>
+            {/* Right Song Card (Staggered) - Hidden on mobile */}
+            {!isMobile && (
+              <motion.button
+                key={`next-${currentIndex}`}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.3 }}
+                onClick={handleNext}
+                className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
+              >
+                <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+                  isDarkBackground
+                    ? 'bg-white/5 border-white/15'
+                    : 'bg-white/10 border-white/20'
+                }`}>
+                  <div className="text-center">
+                    <div className="text-white/90 font-medium text-sm mb-1 truncate">
+                      {getNextSong().name}
                     </div>
-                  )}
+                    <div className="text-white/60 text-xs truncate">
+                      {getNextSong().artist}
+                    </div>
+                    {isPlaying && playingSongIndex === (currentIndex + 1) % 1440 && (
+                      <div className="mt-2 flex items-center justify-center gap-1">
+                        <div className="w-1 h-2 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-1 h-4 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '300ms' }}></div>
+                        <div className="w-1 h-3 bg-white/70 rounded-full animate-pulse" style={{ animationDelay: '450ms' }}></div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </motion.button>
+              </motion.button>
+            )}
           </div>
 
           {/* Right Arrow Button */}
