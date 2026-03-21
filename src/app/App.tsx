@@ -24,13 +24,8 @@ export default function App() {
 
   useEffect(() => {
     const updateGradient = () => {
-      // Get the hour in the selected timezone
-      const hour = new Date().toLocaleString('en-US', {
-        hour: 'numeric',
-        hour12: false,
-        timeZone: selectedTimezone,
-      });
-      const currentHour = parseInt(hour);
+      // Use the hour from the currently viewed song card
+      const currentHour = Math.floor(currentViewIndex / 60);
       
       // Determine if it's a dark hour (late night/early morning)
       const isDark = currentHour >= 20 || currentHour <= 5;
