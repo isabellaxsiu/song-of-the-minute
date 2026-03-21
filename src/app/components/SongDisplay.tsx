@@ -218,7 +218,7 @@ export function SongDisplay({
           )}
 
           {/* Center Song Card */}
-          <motion.button
+          <motion.div
             key={`center-${currentIndex}`}
             custom={direction}
             variants={slideVariants}
@@ -226,24 +226,53 @@ export function SongDisplay({
             animate="center"
             exit="exit"
             transition={{ duration: 0.3 }}
-            onClick={() => onSongCardClick(currentIndex)}
-            className={`flex-shrink-0 scale-100 ${isMobile ? 'w-[280px]' : 'w-[300px]'} cursor-pointer`}
+            className={`flex-shrink-0 scale-100 ${isMobile ? 'w-[280px]' : 'w-[300px]'}`}
           >
-            <div className={`backdrop-blur-md border rounded-2xl px-6 py-4 shadow-2xl transition-all duration-200 hover:scale-[1.02] ${
-              isDarkBackground
-                ? 'bg-white/8 border-white/20'
-                : 'bg-white/10 border-white/20'
-            }`}>
-              <div className="text-center">
-                <div className="text-white/90 font-medium mb-1" style={{ textWrap: 'balance', fontSize: getCurrentSong().name.length > 25 ? '0.875rem' : '1.125rem', lineHeight: getCurrentSong().name.length > 25 ? '1.25rem' : '1.75rem' }}>
-                  {getCurrentSong().name}
-                </div>
-                <div className="text-white/60 text-sm" style={{ textWrap: 'balance' }}>
-                  {getCurrentSong().artist}
+            {currentIndex >= 720 ? (
+              <div className={`backdrop-blur-md border rounded-2xl px-6 py-5 shadow-2xl ${
+                isDarkBackground
+                  ? 'bg-white/8 border-white/20'
+                  : 'bg-white/10 border-white/20'
+              }`}>
+                <div className="text-center">
+                  <div className="text-white/80 text-sm mb-3" style={{ textWrap: 'balance' }}>
+                    Oops! Songs from 12pm to 12am aren't serviced yet.
+                  </div>
+                  <button
+                    onClick={() => {
+                      const randomMinute = Math.floor(Math.random() * 720);
+                      setDirection(0);
+                      setCurrentIndex(randomMinute);
+                      setCurrentViewIndex(randomMinute);
+                    }}
+                    className="text-white font-medium text-sm underline underline-offset-2 hover:text-white/80 transition-colors"
+                  >
+                    Show me a song of the minute
+                  </button>
                 </div>
               </div>
-            </div>
-          </motion.button>
+            ) : (
+              <button
+                onClick={() => onSongCardClick(currentIndex)}
+                className="w-full cursor-pointer"
+              >
+                <div className={`backdrop-blur-md border rounded-2xl px-6 py-4 shadow-2xl transition-all duration-200 hover:scale-[1.02] ${
+                  isDarkBackground
+                    ? 'bg-white/8 border-white/20'
+                    : 'bg-white/10 border-white/20'
+                }`}>
+                  <div className="text-center">
+                    <div className="text-white/90 font-medium mb-1" style={{ textWrap: 'balance', fontSize: getCurrentSong().name.length > 25 ? '0.875rem' : '1.125rem', lineHeight: getCurrentSong().name.length > 25 ? '1.25rem' : '1.75rem' }}>
+                      {getCurrentSong().name}
+                    </div>
+                    <div className="text-white/60 text-sm" style={{ textWrap: 'balance' }}>
+                      {getCurrentSong().artist}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            )}
+          </motion.div>
 
           {/* Right Song Card - Hidden on mobile */}
           {!isMobile && (
