@@ -104,14 +104,21 @@ export function useAudioPlayer() {
       },
       (controller) => {
         controllerRef.current = controller;
+        let hasStartedPlaying = false;
 
         controller.addListener('playback_update', (e: any) => {
           if (!e) return;
-          const { isPaused, duration, position } = e.data;
+          const { isPaused, position } = e.data;
+          
+          if (!isPaused && position > 0) {
+            hasStartedPlaying = true;
+          }
+          
           setIsActuallyPlaying(!isPaused);
 
-          // Detect track ended (position near duration and paused)
-          if (isPaused && duration > 0 && position >= duration - 1000) {
+          // Preview ended: was playing, now paused, and position > 0
+          if (isPaused && hasStartedPlaying && position > 0) {
+            hasStartedPlaying = false;
             onPlaybackEndRef.current?.();
           }
         });
