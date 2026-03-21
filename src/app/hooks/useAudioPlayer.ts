@@ -25,16 +25,18 @@ export function useAudioPlayer() {
   const play = useCallback((spotifyId: string) => {
     if (!spotifyId || !iframeRef.current) return;
     setCurrentTrackId(spotifyId);
-    // Use Spotify embed with autoplay — keep iframe offscreen so audio plays without visible UI
-    iframeRef.current.src = `https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0&autoplay=1`;
+    // Show Spotify embed at the bottom for user to control playback
+    iframeRef.current.src = `https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`;
     iframeRef.current.style.display = 'block';
     iframeRef.current.style.position = 'fixed';
-    iframeRef.current.style.width = '1px';
-    iframeRef.current.style.height = '1px';
-    iframeRef.current.style.left = '-9999px';
-    iframeRef.current.style.top = '-9999px';
-    iframeRef.current.style.opacity = '0';
-    iframeRef.current.style.pointerEvents = 'none';
+    iframeRef.current.style.bottom = '0';
+    iframeRef.current.style.left = '0';
+    iframeRef.current.style.right = '';
+    iframeRef.current.style.width = '100%';
+    iframeRef.current.style.height = '80px';
+    iframeRef.current.style.zIndex = '50';
+    iframeRef.current.style.opacity = '1';
+    iframeRef.current.style.pointerEvents = 'auto';
     iframeRef.current.style.border = 'none';
   }, []);
 
