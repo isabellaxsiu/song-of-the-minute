@@ -22,6 +22,29 @@ interface SpotifyEmbedController {
   addListener: (event: string, callback: (data?: any) => void) => void;
 }
 
+// Module-level state to avoid closure issues
+let _wasPlaying = false;
+let _ended = false;
+let _fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+let _setIsActuallyPlaying: ((v: boolean) => void) | null = null;
+let _onPlaybackEnd: (() => void) | null = null;
+
+function clearFallback() {
+  if (_fallbackTimer) {
+    clearTimeout(_fallbackTimer);
+    _fallbackTimer = null;
+  }
+}
+
+function fireEnded() {
+  if (_ended) return;
+  _ended = true;
+  _wasPlaying = false;
+  clearFallback();
+  _setIsActuallyPlaying?.(false);
+  _onPlaybackEnd?.();
+}
+
 /**
  * Hook that manages playback via Spotify's IFrame API.
  * Provides real playback state tracking (play/pause/ended).
@@ -32,28 +55,10 @@ export function useAudioPlayer() {
   const iframeAPIRef = useRef<SpotifyIFrameAPI | null>(null);
   const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
   const [isActuallyPlaying, setIsActuallyPlaying] = useState(false);
-  const onPlaybackEndRef = useRef<(() => void) | null>(null);
   const pendingPlayRef = useRef<string | null>(null);
-  const wasPlayingRef = useRef(false);
-  const playStartTimeRef = useRef<number>(0);
-  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const endedRef = useRef(false);
 
-  const clearFallbackTimer = () => {
-    if (fallbackTimerRef.current) {
-      clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
-  };
-
-  const handlePlaybackEnded = () => {
-    if (endedRef.current) return; // prevent double-firing
-    endedRef.current = true;
-    clearFallbackTimer();
-    wasPlayingRef.current = false;
-    setIsActuallyPlaying(false);
-    onPlaybackEndRef.current?.();
-  };
+  // Keep module-level setter in sync
+  _setIsActuallyPlaying = setIsActuallyPlaying;
 
   useEffect(() => {
     // Create a hidden container for the Spotify embed
@@ -76,7 +81,6 @@ export function useAudioPlayer() {
 
     window.onSpotifyIframeApiReady = (IFrameAPI) => {
       iframeAPIRef.current = IFrameAPI;
-      // If there's a pending play request, execute it now
       if (pendingPlayRef.current) {
         const spotifyId = pendingPlayRef.current;
         pendingPlayRef.current = null;
@@ -87,7 +91,7 @@ export function useAudioPlayer() {
     document.body.appendChild(script);
 
     return () => {
-      clearFallbackTimer();
+      clearFallback();
       if (controllerRef.current) {
         controllerRef.current.destroy();
       }
@@ -101,21 +105,17 @@ export function useAudioPlayer() {
     const container = containerRef.current;
     if (!container) return;
 
-    // Destroy existing controller
     if (controllerRef.current) {
       controllerRef.current.destroy();
       controllerRef.current = null;
     }
 
-    // Clear container and reset state
     container.innerHTML = '';
     container.style.display = 'block';
-    wasPlayingRef.current = false;
-    endedRef.current = false;
-    playStartTimeRef.current = 0;
-    clearFallbackTimer();
+    _wasPlaying = false;
+    _ended = false;
+    clearFallback();
 
-    // Create an element for the embed
     const embedEl = document.createElement('div');
     embedEl.id = 'spotify-embed';
     container.appendChild(embedEl);
@@ -135,22 +135,21 @@ export function useAudioPlayer() {
           const { isPaused, position } = e.data;
 
           if (!isPaused) {
-            wasPlayingRef.current = true;
-            endedRef.current = false;
-            setIsActuallyPlaying(true);
-          } else if (isPaused && wasPlayingRef.current && position > 0) {
+            _wasPlaying = true;
+            _ended = false;
+            _setIsActuallyPlaying?.(true);
+          } else if (isPaused && _wasPlaying && position > 0) {
             // Genuine end: was playing, now paused, position advanced
-            handlePlaybackEnded();
+            fireEnded();
           }
-          // Ignore isPaused with position === 0 (initial buffering or reset)
         });
 
         controller.addListener('ready', () => {
-          // Set fallback timer when embed is ready
-          clearFallbackTimer();
-          endedRef.current = false;
-          fallbackTimerRef.current = setTimeout(() => {
-            handlePlaybackEnded();
+          // Set fallback timer
+          clearFallback();
+          _ended = false;
+          _fallbackTimer = setTimeout(() => {
+            fireEnded();
           }, 29000);
           controller.play();
         });
@@ -165,13 +164,14 @@ export function useAudioPlayer() {
     if (iframeAPIRef.current) {
       initController(iframeAPIRef.current, spotifyId);
     } else {
-      // API not loaded yet, queue the play request
       pendingPlayRef.current = spotifyId;
     }
   }, [initController]);
 
   const pause = useCallback(() => {
-    clearFallbackTimer();
+    clearFallback();
+    _wasPlaying = false;
+    _ended = false;
     if (controllerRef.current) {
       controllerRef.current.destroy();
       controllerRef.current = null;
@@ -180,14 +180,12 @@ export function useAudioPlayer() {
       containerRef.current.style.display = 'none';
       containerRef.current.innerHTML = '';
     }
-    wasPlayingRef.current = false;
-    endedRef.current = false;
     setCurrentTrackId(null);
     setIsActuallyPlaying(false);
   }, []);
 
   const onEnded = useCallback((cb: () => void) => {
-    onPlaybackEndRef.current = cb;
+    _onPlaybackEnd = cb;
   }, []);
 
   return { play, pause, onEnded, currentTrackId, isActuallyPlaying };
