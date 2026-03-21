@@ -217,23 +217,33 @@ export default function App() {
 
       {/* Center content: play button */}
       <div className="relative z-10 flex flex-col items-center">
-        <button
-          onClick={handleToggle}
-          className="group"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
-        >
-          <div className={`backdrop-blur-md border rounded-full p-8 shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ${
-            isDarkBackground 
-              ? 'bg-white/10 border-white/20 hover:bg-white/15' 
-              : 'bg-white/20 border-white/30 hover:bg-white/30'
-          }`}>
-            {isPlaying ? (
-              <Pause className="size-16 text-white fill-white" />
-            ) : (
-              <Play className="size-16 text-white fill-white" />
-            )}
-          </div>
-        </button>
+        {(() => {
+          const isOopsCard = currentViewIndex >= 720;
+          return (
+            <button
+              onClick={isOopsCard ? undefined : handleToggle}
+              className={`group ${isOopsCard ? 'cursor-default opacity-50' : ''}`}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+              disabled={isOopsCard}
+            >
+              <div className={`backdrop-blur-md border rounded-full p-8 shadow-2xl transition-all duration-300 ${
+                isOopsCard
+                  ? isDarkBackground
+                    ? 'bg-white/5 border-white/10'
+                    : 'bg-white/10 border-white/15'
+                  : isDarkBackground 
+                    ? 'bg-white/10 border-white/20 hover:bg-white/15 hover:scale-110 active:scale-95' 
+                    : 'bg-white/20 border-white/30 hover:bg-white/30 hover:scale-110 active:scale-95'
+              }`}>
+                {isPlaying && !isOopsCard ? (
+                  <Pause className="size-16 text-white fill-white" />
+                ) : (
+                  <Play className="size-16 text-white fill-white" />
+                )}
+              </div>
+            </button>
+          );
+        })()}
       </div>
 
       {/* Song Display */}
