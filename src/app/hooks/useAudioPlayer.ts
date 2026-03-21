@@ -34,6 +34,22 @@ export function useAudioPlayer() {
   const [isActuallyPlaying, setIsActuallyPlaying] = useState(false);
   const onPlaybackEndRef = useRef<(() => void) | null>(null);
   const pendingPlayRef = useRef<string | null>(null);
+  const wasPlayingRef = useRef(false);
+  const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearFallbackTimer = () => {
+    if (fallbackTimerRef.current) {
+      clearTimeout(fallbackTimerRef.current);
+      fallbackTimerRef.current = null;
+    }
+  };
+
+  const handlePlaybackEnded = () => {
+    clearFallbackTimer();
+    wasPlayingRef.current = false;
+    setIsActuallyPlaying(false);
+    onPlaybackEndRef.current?.();
+  };
 
   useEffect(() => {
     // Create a hidden container for the Spotify embed
@@ -67,6 +83,7 @@ export function useAudioPlayer() {
     document.body.appendChild(script);
 
     return () => {
+      clearFallbackTimer();
       if (controllerRef.current) {
         controllerRef.current.destroy();
       }
@@ -86,9 +103,11 @@ export function useAudioPlayer() {
       controllerRef.current = null;
     }
 
-    // Clear container
+    // Clear container and reset state
     container.innerHTML = '';
     container.style.display = 'block';
+    wasPlayingRef.current = false;
+    clearFallbackTimer();
 
     // Create an element for the embed
     const embedEl = document.createElement('div');
@@ -104,22 +123,24 @@ export function useAudioPlayer() {
       },
       (controller) => {
         controllerRef.current = controller;
-        let hasStartedPlaying = false;
 
         controller.addListener('playback_update', (e: any) => {
           if (!e) return;
           const { isPaused, position } = e.data;
-          
-          if (!isPaused && position > 0) {
-            hasStartedPlaying = true;
-          }
-          
-          setIsActuallyPlaying(!isPaused);
 
-          // Preview ended: was playing, now paused, and position > 0
-          if (isPaused && hasStartedPlaying && position > 0) {
-            hasStartedPlaying = false;
-            onPlaybackEndRef.current?.();
+          if (!isPaused) {
+            if (!wasPlayingRef.current) {
+              // Playback just started — set fallback timer
+              wasPlayingRef.current = true;
+              clearFallbackTimer();
+              fallbackTimerRef.current = setTimeout(() => {
+                handlePlaybackEnded();
+              }, 29000);
+            }
+            setIsActuallyPlaying(true);
+          } else if (isPaused && wasPlayingRef.current) {
+            // Transition from playing → paused = ended (regardless of position)
+            handlePlaybackEnded();
           }
         });
 
@@ -143,6 +164,7 @@ export function useAudioPlayer() {
   }, [initController]);
 
   const pause = useCallback(() => {
+    clearFallbackTimer();
     if (controllerRef.current) {
       controllerRef.current.destroy();
       controllerRef.current = null;
@@ -151,6 +173,7 @@ export function useAudioPlayer() {
       containerRef.current.style.display = 'none';
       containerRef.current.innerHTML = '';
     }
+    wasPlayingRef.current = false;
     setCurrentTrackId(null);
     setIsActuallyPlaying(false);
   }, []);
