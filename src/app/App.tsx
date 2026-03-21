@@ -192,7 +192,7 @@ export default function App() {
   return (
     <div className={`size-full flex flex-col items-center justify-center bg-gradient-to-br ${gradientColors.from} ${gradientColors.to} transition-colors duration-1000`}>
       {/* Blur overlay */}
-      <div className="absolute inset-0 backdrop-blur-3xl"></div>
+      <div className="absolute inset-0 backdrop-blur-3xl" />
       
       {/* Time Display - top center on mobile, top right on desktop */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-20">
