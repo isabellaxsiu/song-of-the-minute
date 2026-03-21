@@ -235,7 +235,11 @@ export default function App() {
                     ? 'bg-white/10 border-white/20 hover:bg-white/15 hover:scale-110 active:scale-95' 
                     : 'bg-white/20 border-white/30 hover:bg-white/30 hover:scale-110 active:scale-95'
               }`}>
-                <Play className="size-16 text-white fill-white" />
+                {isPlaying && !isOopsCard ? (
+                  <Pause className="size-16 text-white fill-white" />
+                ) : (
+                  <Play className="size-16 text-white fill-white" />
+                )}
               </div>
             </button>
           );
