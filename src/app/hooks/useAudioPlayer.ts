@@ -118,7 +118,7 @@ export function useAudioPlayer() {
           endTimerRef.current = setTimeout(() => {
             setIsActuallyPlaying(false);
             onPlaybackEndRef.current?.();
-          }, 30000);
+          }, 29000);
           
           controller.play();
         });
