@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Play, Pause } from 'lucide-react';
 import { TimeDisplay } from './components/TimeDisplay';
 import { SongDisplay } from './components/SongDisplay';
-import { ModeToggle } from './components/ModeToggle';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { useSongs } from './hooks/useSongs';
 
