@@ -44,7 +44,7 @@ interface TimeDisplayProps {
 export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackground }: TimeDisplayProps) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedTz, setSelectedTz] = useState<Timezone>(
-    timezones.find(tz => tz.code === 'UTC') || timezones[0]
+    timezones.find(tz => tz.code === selectedTimezone) || timezones.find(tz => tz.code === 'UTC') || timezones[0]
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const selectedItemRef = useRef<HTMLButtonElement>(null);

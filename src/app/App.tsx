@@ -9,7 +9,13 @@ import { useSongs } from './hooks/useSongs';
 export default function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [gradientColors, setGradientColors] = useState({ from: '', to: '' });
-  const [selectedTimezone, setSelectedTimezone] = useState<string>('UTC');
+  const [selectedTimezone, setSelectedTimezone] = useState<string>(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch {
+      return 'UTC';
+    }
+  });
   const [mode, setMode] = useState<'radio' | 'custom'>('radio');
   const [playingSongIndex, setPlayingSongIndex] = useState<number | null>(null);
   const [currentViewIndex, setCurrentViewIndex] = useState(0);
