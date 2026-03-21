@@ -158,11 +158,11 @@ export function SongDisplay({
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
-          className="absolute -top-8 left-1/2 -translate-x-1/2 w-max"
+          className="absolute -top-10 left-1/2 -translate-x-1/2"
         >
           <button
             onClick={handleBackToCurrentSong}
-            className="text-white/70 text-xs sm:text-sm hover:text-white/90 transition-colors duration-200 whitespace-nowrap"
+            className="text-white/70 text-sm hover:text-white/90 transition-colors duration-200"
           >
             {backButtonText}
           </button>
