@@ -193,6 +193,17 @@ export default function App() {
     }
   };
 
+  const handleSongCardClick = (minuteIndex: number) => {
+    // Stop current playback and start the clicked song
+    pause();
+    const song = getSong(minuteIndex);
+    if (song.spotifyId) {
+      setPlayingSongIndex(minuteIndex);
+      setIsPlaying(true);
+      play(song.spotifyId);
+    }
+  };
+
 
   return (
     <div className={`size-full flex flex-col items-center justify-center bg-gradient-to-br ${gradientColors.from} ${gradientColors.to} transition-colors duration-1000`}>
@@ -239,6 +250,7 @@ export default function App() {
         currentViewIndex={currentViewIndex}
         setCurrentViewIndex={setCurrentViewIndex}
         isDarkBackground={isDarkBackground}
+        onSongCardClick={handleSongCardClick}
       />
     </div>
   );
