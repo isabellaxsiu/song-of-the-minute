@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Play, Pause } from 'lucide-react';
 import { TimeDisplay } from './components/TimeDisplay';
 import { SongDisplay } from './components/SongDisplay';
-import { ModeToggle } from './components/ModeToggle';
 import { useAudioPlayer } from './hooks/useAudioPlayer';
 import { useSongs } from './hooks/useSongs';
 
@@ -16,7 +15,7 @@ export default function App() {
       return 'UTC';
     }
   });
-  const [mode, setMode] = useState<'radio' | 'custom'>('radio');
+  const mode = 'custom' as const;
   const [playingSongIndex, setPlayingSongIndex] = useState<number | null>(null);
   const [currentViewIndex, setCurrentViewIndex] = useState(0);
   const [isDarkBackground, setIsDarkBackground] = useState(false);
@@ -189,19 +188,11 @@ export default function App() {
     }
   };
 
-  const handleModeChange = (newMode: 'radio' | 'custom') => {
-    setMode(newMode);
-    if (isPlaying) {
-      pause();
-      setIsPlaying(false);
-      setPlayingSongIndex(null);
-    }
-  };
 
   return (
     <div className={`size-full flex flex-col items-center justify-center bg-gradient-to-br ${gradientColors.from} ${gradientColors.to} transition-colors duration-1000`}>
       {/* Blur overlay */}
-      <div className="absolute inset-0 backdrop-blur-3xl"></div>
+      <div className="absolute inset-0 backdrop-blur-3xl" />
       
       {/* Time Display - top center on mobile, top right on desktop */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-20">
@@ -212,18 +203,8 @@ export default function App() {
         />
       </div>
 
-      {/* Desktop: Mode Toggle top-left */}
-      <div className="hidden md:block absolute top-8 left-8 z-20">
-        <ModeToggle
-          mode={mode}
-          onModeChange={handleModeChange}
-          isDarkBackground={isDarkBackground}
-        />
-      </div>
-
-      {/* Center content: play button + mobile toggle below */}
-      <div className="relative z-10 flex flex-col items-center gap-6">
-        {/* Glass-effect play button */}
+      {/* Center content: play button */}
+      <div className="relative z-10 flex flex-col items-center">
         <button
           onClick={handleToggle}
           className="group"
@@ -241,15 +222,6 @@ export default function App() {
             )}
           </div>
         </button>
-
-        {/* Mobile: Mode Toggle below play button */}
-        <div className="md:hidden">
-          <ModeToggle
-            mode={mode}
-            onModeChange={handleModeChange}
-            isDarkBackground={isDarkBackground}
-          />
-        </div>
       </div>
 
       {/* Song Display */}
