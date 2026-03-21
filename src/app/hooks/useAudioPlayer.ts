@@ -132,12 +132,14 @@ export function useAudioPlayer() {
 
         controller.addListener('playback_update', (e: any) => {
           if (!e) return;
-          const { isPaused, position } = e.data;
+          const { isPaused } = e.data;
 
           if (!isPaused) {
             if (!wasPlayingRef.current) {
-              // Playback just started — set fallback timer
+              // Playback just started
               wasPlayingRef.current = true;
+              endedRef.current = false;
+              playStartTimeRef.current = Date.now();
               clearFallbackTimer();
               fallbackTimerRef.current = setTimeout(() => {
                 handlePlaybackEnded();
@@ -145,8 +147,12 @@ export function useAudioPlayer() {
             }
             setIsActuallyPlaying(true);
           } else if (isPaused && wasPlayingRef.current) {
-            // Transition from playing → paused = ended (regardless of position)
-            handlePlaybackEnded();
+            // Only count as ended if we've been playing for at least 2 seconds
+            // (avoids false triggers from initial buffering events)
+            const elapsed = Date.now() - playStartTimeRef.current;
+            if (elapsed > 2000) {
+              handlePlaybackEnded();
+            }
           }
         });
 
