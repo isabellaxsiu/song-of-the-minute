@@ -164,6 +164,7 @@ export function useAudioPlayer() {
   }, [initController]);
 
   const pause = useCallback(() => {
+    clearFallbackTimer();
     if (controllerRef.current) {
       controllerRef.current.destroy();
       controllerRef.current = null;
@@ -172,6 +173,7 @@ export function useAudioPlayer() {
       containerRef.current.style.display = 'none';
       containerRef.current.innerHTML = '';
     }
+    wasPlayingRef.current = false;
     setCurrentTrackId(null);
     setIsActuallyPlaying(false);
   }, []);
