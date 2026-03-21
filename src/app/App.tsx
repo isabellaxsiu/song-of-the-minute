@@ -140,11 +140,7 @@ export default function App() {
     };
 
     updateGradient();
-    // Update gradient every minute
-    const interval = setInterval(updateGradient, 60000);
-    
-    return () => clearInterval(interval);
-  }, [selectedTimezone]);
+  }, [currentViewIndex]);
 
   // Keep isPlaying in sync with actual Spotify playback state
   useEffect(() => {
