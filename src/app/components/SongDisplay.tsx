@@ -14,6 +14,7 @@ interface SongDisplayProps {
   currentViewIndex: number;
   setCurrentViewIndex: (index: number) => void;
   isDarkBackground: boolean;
+  onSongCardClick: (minuteIndex: number) => void;
 }
 
 export function SongDisplay({ 
@@ -23,7 +24,8 @@ export function SongDisplay({
   setPlayingSongIndex,
   currentViewIndex,
   setCurrentViewIndex,
-  isDarkBackground
+  isDarkBackground,
+  onSongCardClick
 }: SongDisplayProps) {
   const { getSong } = useSongs();
   const isMobile = useIsMobile();
@@ -216,7 +218,7 @@ export function SongDisplay({
           )}
 
           {/* Center Song Card */}
-          <motion.div
+          <motion.button
             key={`center-${currentIndex}`}
             custom={direction}
             variants={slideVariants}
@@ -224,9 +226,10 @@ export function SongDisplay({
             animate="center"
             exit="exit"
             transition={{ duration: 0.3 }}
-            className={`flex-shrink-0 scale-100 ${isMobile ? 'w-[280px]' : 'w-[300px]'}`}
+            onClick={() => onSongCardClick(currentIndex)}
+            className={`flex-shrink-0 scale-100 ${isMobile ? 'w-[280px]' : 'w-[300px]'} cursor-pointer`}
           >
-            <div className={`backdrop-blur-md border rounded-2xl px-6 py-4 shadow-2xl ${
+            <div className={`backdrop-blur-md border rounded-2xl px-6 py-4 shadow-2xl transition-all duration-200 hover:scale-[1.02] ${
               isDarkBackground
                 ? 'bg-white/8 border-white/20'
                 : 'bg-white/10 border-white/20'
@@ -240,7 +243,7 @@ export function SongDisplay({
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.button>
 
           {/* Right Song Card - Hidden on mobile */}
           {!isMobile && (
