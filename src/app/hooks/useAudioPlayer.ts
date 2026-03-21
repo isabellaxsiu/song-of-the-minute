@@ -35,7 +35,9 @@ export function useAudioPlayer() {
   const onPlaybackEndRef = useRef<(() => void) | null>(null);
   const pendingPlayRef = useRef<string | null>(null);
   const wasPlayingRef = useRef(false);
+  const playStartTimeRef = useRef<number>(0);
   const fallbackTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const endedRef = useRef(false);
 
   const clearFallbackTimer = () => {
     if (fallbackTimerRef.current) {
@@ -45,6 +47,8 @@ export function useAudioPlayer() {
   };
 
   const handlePlaybackEnded = () => {
+    if (endedRef.current) return; // prevent double-firing
+    endedRef.current = true;
     clearFallbackTimer();
     wasPlayingRef.current = false;
     setIsActuallyPlaying(false);
