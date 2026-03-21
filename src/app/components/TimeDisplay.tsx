@@ -119,7 +119,7 @@ export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackgrou
       </div>
 
       {/* Timezone Selector */}
-      <div className="relative flex justify-end">
+      <div className="relative flex justify-center md:justify-end">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors group"
