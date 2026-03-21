@@ -122,6 +122,17 @@ export function useAudioPlayer() {
           
           controller.play();
         });
+
+        controller.addListener('playback_update', (data: any) => {
+          if (!data?.data) return;
+          const { isPaused } = data.data;
+          if (isPaused) {
+            clearEndTimer();
+            setIsActuallyPlaying(false);
+          } else {
+            setIsActuallyPlaying(true);
+          }
+        });
       }
     );
   }, [clearEndTimer]);
