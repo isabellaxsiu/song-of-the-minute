@@ -6,7 +6,7 @@ interface ModeToggleProps {
 
 export function ModeToggle({ mode, onModeChange, isDarkBackground }: ModeToggleProps) {
   return (
-    <div className="absolute bottom-28 left-1/2 -translate-x-1/2 md:bottom-auto md:top-8 md:left-8 md:translate-x-0 z-20">
+    <div className="z-20">
       <div className={`backdrop-blur-md border rounded-full p-1 shadow-2xl flex ${
         isDarkBackground
           ? 'bg-white/5 border-white/15'

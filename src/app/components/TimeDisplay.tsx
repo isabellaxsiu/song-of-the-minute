@@ -110,7 +110,7 @@ export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackgrou
   };
 
   return (
-    <div className="absolute top-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-20">
+    <div>
       {/* Time Display */}
       <div className="text-white/90 mb-3 text-center md:text-right">
         <div className="text-3xl font-mono font-light tracking-widest tabular-nums">

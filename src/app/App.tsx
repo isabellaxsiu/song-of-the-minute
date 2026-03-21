@@ -193,17 +193,59 @@ export default function App() {
   };
 
   return (
-    <div className={`size-full flex items-center justify-center bg-gradient-to-br ${gradientColors.from} ${gradientColors.to} transition-colors duration-1000`}>
+    <div className={`size-full flex flex-col items-center justify-center bg-gradient-to-br ${gradientColors.from} ${gradientColors.to} transition-colors duration-1000`}>
       {/* Blur overlay */}
       <div className="absolute inset-0 backdrop-blur-3xl"></div>
       
-      {/* Time Display */}
-      <TimeDisplay 
-        selectedTimezone={selectedTimezone}
-        onTimezoneChange={setSelectedTimezone}
-        isDarkBackground={isDarkBackground}
-      />
-      
+      {/* Time Display - top center on mobile, top right on desktop */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 md:left-auto md:right-8 md:translate-x-0 z-20">
+        <TimeDisplay 
+          selectedTimezone={selectedTimezone}
+          onTimezoneChange={setSelectedTimezone}
+          isDarkBackground={isDarkBackground}
+        />
+      </div>
+
+      {/* Desktop: Mode Toggle top-left */}
+      <div className="hidden md:block absolute top-8 left-8 z-20">
+        <ModeToggle
+          mode={mode}
+          onModeChange={handleModeChange}
+          isDarkBackground={isDarkBackground}
+        />
+      </div>
+
+      {/* Center content: play button + mobile toggle below */}
+      <div className="relative z-10 flex flex-col items-center gap-6">
+        {/* Glass-effect play button */}
+        <button
+          onClick={handleToggle}
+          className="group"
+          aria-label={isPlaying ? 'Pause' : 'Play'}
+        >
+          <div className={`backdrop-blur-md border rounded-full p-8 shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ${
+            isDarkBackground 
+              ? 'bg-white/10 border-white/20 hover:bg-white/15' 
+              : 'bg-white/20 border-white/30 hover:bg-white/30'
+          }`}>
+            {isPlaying ? (
+              <Pause className="size-16 text-white fill-white" />
+            ) : (
+              <Play className="size-16 text-white fill-white" />
+            )}
+          </div>
+        </button>
+
+        {/* Mobile: Mode Toggle below play button */}
+        <div className="md:hidden">
+          <ModeToggle
+            mode={mode}
+            onModeChange={handleModeChange}
+            isDarkBackground={isDarkBackground}
+          />
+        </div>
+      </div>
+
       {/* Song Display */}
       <SongDisplay 
         selectedTimezone={selectedTimezone}
@@ -213,32 +255,6 @@ export default function App() {
         setPlayingSongIndex={setPlayingSongIndex}
         currentViewIndex={currentViewIndex}
         setCurrentViewIndex={setCurrentViewIndex}
-        isDarkBackground={isDarkBackground}
-      />
-      
-      {/* Glass-effect button */}
-      <button
-        onClick={handleToggle}
-        className="relative z-10 group"
-        aria-label={isPlaying ? 'Pause' : 'Play'}
-      >
-        <div className={`backdrop-blur-md border rounded-full p-8 shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 ${
-          isDarkBackground 
-            ? 'bg-white/10 border-white/20 hover:bg-white/15' 
-            : 'bg-white/20 border-white/30 hover:bg-white/30'
-        }`}>
-          {isPlaying ? (
-            <Pause className="size-16 text-white fill-white" />
-          ) : (
-            <Play className="size-16 text-white fill-white" />
-          )}
-        </div>
-      </button>
-      
-      {/* Mode Toggle */}
-      <ModeToggle
-        mode={mode}
-        onModeChange={handleModeChange}
         isDarkBackground={isDarkBackground}
       />
     </div>
