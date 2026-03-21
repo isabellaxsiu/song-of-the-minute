@@ -108,7 +108,7 @@ export function TimeDisplay({ selectedTimezone, onTimezoneChange, isDarkBackgrou
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="flex items-center gap-2 text-white/60 hover:text-white/90 transition-colors group"
         >
-          <span className="text-xs font-medium tracking-wide uppercase">{selectedTz.name}</span>
+          <span className="text-xs font-medium tracking-wide uppercase">{selectedTz.code === selectedTimezone ? selectedTz.name : selectedTimezone}</span>
           <ChevronDown className={`size-3.5 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
 
