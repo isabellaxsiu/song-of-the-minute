@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { type Song } from '../data/songData';
 import { useSongs } from '../hooks/useSongs';
+import { useIsMobile } from '../components/ui/use-mobile';
 
 interface SongDisplayProps {
   selectedTimezone: string;
