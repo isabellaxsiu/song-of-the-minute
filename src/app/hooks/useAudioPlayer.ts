@@ -109,17 +109,9 @@ export function useAudioPlayer() {
       },
       (controller) => {
         controllerRef.current = controller;
+        let hasStartedPlaying = false;
 
         controller.addListener('ready', () => {
-          setIsActuallyPlaying(true);
-          
-          // Start 29-second end timer
-          clearEndTimer();
-          endTimerRef.current = setTimeout(() => {
-            setIsActuallyPlaying(false);
-            onPlaybackEndRef.current?.();
-          }, 30500);
-          
           controller.play();
         });
 
@@ -132,6 +124,15 @@ export function useAudioPlayer() {
             onPlaybackEndRef.current?.();
           } else {
             setIsActuallyPlaying(true);
+            if (!hasStartedPlaying) {
+              hasStartedPlaying = true;
+              // Start fallback end timer on first actual playback
+              clearEndTimer();
+              endTimerRef.current = setTimeout(() => {
+                setIsActuallyPlaying(false);
+                onPlaybackEndRef.current?.();
+              }, 30500);
+            }
           }
         });
       }
