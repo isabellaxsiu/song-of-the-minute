@@ -109,7 +109,9 @@ export function useAudioPlayer() {
       },
       (controller) => {
         controllerRef.current = controller;
-        let hasStartedPlaying = false;
+        let hasConfirmedPlayback = false;
+        let updateCount = 0;
+        let lastPosition = -1;
 
         controller.addListener('ready', () => {
           controller.play();
@@ -117,21 +119,30 @@ export function useAudioPlayer() {
 
         controller.addListener('playback_update', (data: any) => {
           if (!data?.data) return;
-          const { isPaused } = data.data;
+          const { isPaused, position } = data.data;
+          
           if (isPaused) {
             clearEndTimer();
-            setIsActuallyPlaying(false);
-            onPlaybackEndRef.current?.();
+            if (hasConfirmedPlayback) {
+              setIsActuallyPlaying(false);
+              onPlaybackEndRef.current?.();
+            }
           } else {
-            setIsActuallyPlaying(true);
-            if (!hasStartedPlaying) {
-              hasStartedPlaying = true;
-              // Start fallback end timer on first actual playback
-              clearEndTimer();
-              endTimerRef.current = setTimeout(() => {
-                setIsActuallyPlaying(false);
-                onPlaybackEndRef.current?.();
-              }, 30500);
+            updateCount++;
+            // Only confirm real playback if position is advancing
+            if (!hasConfirmedPlayback) {
+              if (updateCount >= 2 && position > 0 && position !== lastPosition) {
+                hasConfirmedPlayback = true;
+                setIsActuallyPlaying(true);
+                clearEndTimer();
+                endTimerRef.current = setTimeout(() => {
+                  setIsActuallyPlaying(false);
+                  onPlaybackEndRef.current?.();
+                }, 30500);
+              }
+              lastPosition = position;
+            } else {
+              setIsActuallyPlaying(true);
             }
           }
         });
