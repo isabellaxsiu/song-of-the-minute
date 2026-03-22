@@ -164,30 +164,28 @@ export default function App() {
   };
 
   const handleToggle = () => {
-    const newPlayingState = !isPlaying;
-    setIsPlaying(newPlayingState);
-    
-    if (newPlayingState) {
+    if (isPlaying) {
+      pause();
+      setIsPlaying(false);
+      setPlayingSongIndex(null);
+    } else {
       const minute = getPlayMinute();
-      if (mode === 'custom') setPlayingSongIndex(minute);
       const song = getSong(minute);
       if (song.spotifyId) {
+        if (mode === 'custom') setPlayingSongIndex(minute);
         play(song.spotifyId);
+        // Don't set isPlaying here — wait for isActuallyPlaying from the embed
       }
-    } else {
-      pause();
-      setPlayingSongIndex(null);
     }
   };
 
   const handleSongCardClick = (minuteIndex: number) => {
-    // Stop current playback and start the clicked song
     pause();
     const song = getSong(minuteIndex);
     if (song.spotifyId) {
       setPlayingSongIndex(minuteIndex);
-      setIsPlaying(true);
       play(song.spotifyId);
+      // Don't set isPlaying here — wait for isActuallyPlaying from the embed
     }
   };
 
