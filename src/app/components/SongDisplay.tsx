@@ -309,11 +309,22 @@ export function SongDisplay({
               onClick={handleNext}
               className="flex-shrink-0 w-[200px] opacity-40 scale-90 hover:opacity-60 transition-opacity duration-300"
             >
-              <div className={`backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
+              <div className={`relative backdrop-blur-md border rounded-2xl px-4 py-3 shadow-2xl ${
                 isDarkBackground
                   ? 'bg-white/5 border-white/15'
                   : 'bg-white/10 border-white/20'
               }`}>
+                {getNextSong().spotifyId && (
+                  <a
+                    href={`https://open.spotify.com/track/${getNextSong().spotifyId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-2 right-2 text-white/30 hover:text-white/60 transition-colors"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
                 <div className="text-center">
                   <div className="text-white/90 font-medium text-sm mb-1 truncate">
                     {getNextSong().name}
