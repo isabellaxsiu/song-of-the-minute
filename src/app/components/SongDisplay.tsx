@@ -27,7 +27,15 @@ export function SongDisplay({
   isDarkBackground,
   onSongCardClick
 }: SongDisplayProps) {
-  const { getSong } = useSongs();
+  const { getSong, getRandomSongMinute } = useSongs();
+
+  const formatMinuteAsTime = (minuteOfDay: number): string => {
+    const hours = Math.floor(minuteOfDay / 60);
+    const mins = minuteOfDay % 60;
+    const period = hours < 12 ? 'AM' : 'PM';
+    const displayHour = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+    return `${displayHour}:${mins.toString().padStart(2, '0')} ${period}`;
+  };
   const isMobile = useIsMobile();
   const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '', spotifyId: '', previewUrl: null });
   const [currentIndex, setCurrentIndex] = useState(0);
