@@ -59,7 +59,7 @@ export function SongDisplay({
     const secondsUntilNextMinute = 60 - now.getSeconds();
     const msUntilNextMinute = secondsUntilNextMinute * 1000 - now.getMilliseconds();
     
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     const timeout = setTimeout(() => {
       updateSong();
       interval = setInterval(updateSong, 60000);
