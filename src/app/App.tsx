@@ -207,7 +207,7 @@ export default function App() {
       {/* Center content: play button */}
       <div className="relative z-10 flex flex-col items-center">
         {(() => {
-          const isOopsCard = currentViewIndex >= 720 || !getSong(currentViewIndex).spotifyId;
+          const isOopsCard = getSong(currentViewIndex).artist === 'Coming Soon';
           return (
             <button
               onClick={isOopsCard ? undefined : handleToggle}
