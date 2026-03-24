@@ -62,5 +62,12 @@ export function useSongs() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version]);
 
-  return { getSong };
+  const getRandomSongMinute = useCallback((): number => {
+    const keys = Array.from(songCache.keys());
+    if (keys.length === 0) return 0;
+    return keys[Math.floor(Math.random() * keys.length)];
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version]);
+
+  return { getSong, getRandomSongMinute };
 }

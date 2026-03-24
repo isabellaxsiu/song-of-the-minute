@@ -27,7 +27,15 @@ export function SongDisplay({
   isDarkBackground,
   onSongCardClick
 }: SongDisplayProps) {
-  const { getSong } = useSongs();
+  const { getSong, getRandomSongMinute } = useSongs();
+
+  const formatMinuteAsTime = (minuteOfDay: number): string => {
+    const hours = Math.floor(minuteOfDay / 60);
+    const mins = minuteOfDay % 60;
+    const period = hours < 12 ? 'AM' : 'PM';
+    const displayHour = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
+    return `${displayHour}:${mins.toString().padStart(2, '0')} ${period}`;
+  };
   const isMobile = useIsMobile();
   const [currentSong, setCurrentSong] = useState<Song>({ name: '', artist: '', spotifyId: '', previewUrl: null });
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -239,7 +247,7 @@ export function SongDisplay({
             transition={{ duration: 0.3 }}
             className={`flex-shrink-0 scale-100 ${isMobile ? 'w-[280px]' : 'w-[300px]'}`}
           >
-            {currentIndex >= 720 ? (
+            {getCurrentSong().artist === 'Coming Soon' ? (
               <div className={`backdrop-blur-md border rounded-2xl px-6 py-5 shadow-2xl ${
                 isDarkBackground
                   ? 'bg-white/8 border-white/20'
@@ -247,18 +255,18 @@ export function SongDisplay({
               }`}>
                 <div className="text-center">
                   <div className="text-white/80 text-sm mb-3" style={{ textWrap: 'balance' }}>
-                    Oops! Songs from 12pm to 12am aren't serviced yet.
+                    Oops! We don't have a song for {formatMinuteAsTime(currentIndex)} yet.
                   </div>
                   <button
                     onClick={() => {
-                      const randomMinute = Math.floor(Math.random() * 720);
+                      const randomMinute = getRandomSongMinute();
                       setDirection(0);
                       setCurrentIndex(randomMinute);
                       setCurrentViewIndex(randomMinute);
                     }}
                     className="text-white font-medium text-sm underline underline-offset-2 hover:text-white/80 transition-colors"
                   >
-                    Show me a song of the minute
+                    Take me to a random song of the minute
                   </button>
                 </div>
               </div>
