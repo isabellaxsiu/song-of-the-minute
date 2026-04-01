@@ -27,10 +27,31 @@ async function loadAllSongs() {
   if (loadStarted) return;
   loadStarted = true;
 
-  const { data, error } = await supabase
-    .from('songs')
-    .select('minute_of_day, name, artist, spotify_id, preview_url')
-    .order('minute_of_day');
+  // Fetch all songs in batches to avoid the default 1000-row limit
+  const allData: Array<{ minute_of_day: number; name: string; artist: string; spotify_id: string; preview_url: string | null }> = [];
+  let from = 0;
+  const batchSize = 1000;
+  
+  while (true) {
+    const { data, error: batchError } = await supabase
+      .from('songs')
+      .select('minute_of_day, name, artist, spotify_id, preview_url')
+      .order('minute_of_day')
+      .range(from, from + batchSize - 1);
+
+    if (batchError) {
+      console.error('Failed to load songs:', batchError);
+      loadStarted = false;
+      return;
+    }
+
+    if (data) allData.push(...data);
+    if (!data || data.length < batchSize) break;
+    from += batchSize;
+  }
+
+  const data = allData;
+  const error = null;
 
   if (error) {
     console.error('Failed to load songs:', error);
