@@ -28,7 +28,7 @@ async function loadAllSongs() {
   loadStarted = true;
 
   // Fetch all songs in batches to avoid the default 1000-row limit
-  const allData: typeof data = [];
+  const allData: Array<{ minute_of_day: number; name: string; artist: string; spotify_id: string; preview_url: string | null }> = [];
   let from = 0;
   const batchSize = 1000;
   
