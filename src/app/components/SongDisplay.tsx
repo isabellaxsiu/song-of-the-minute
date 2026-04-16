@@ -250,61 +250,36 @@ export function SongDisplay({
             transition={{ duration: 0.3 }}
             className={`flex-shrink-0 scale-100 ${isMobile ? 'w-[280px]' : 'w-[300px]'}`}
           >
-            {getCurrentSong().artist === 'Coming Soon' ? (
-              <div className={`backdrop-blur-md border rounded-2xl px-6 py-5 shadow-2xl ${
+            <button
+              onClick={() => onSongCardClick(currentIndex)}
+              className="w-full cursor-pointer"
+            >
+              <div className={`relative backdrop-blur-md border rounded-2xl px-6 py-4 shadow-2xl transition-all duration-200 hover:scale-[1.02] ${
                 isDarkBackground
                   ? 'bg-white/8 border-white/20'
                   : 'bg-white/10 border-white/20'
               }`}>
-                <div className="text-center">
-                  <div className="text-white/80 text-sm mb-3" style={{ textWrap: 'balance' }}>
-                    Oops! We don't have a song for {formatMinuteAsTime(currentIndex)} yet.
-                  </div>
-                  <button
-                    onClick={() => {
-                      const randomMinute = getRandomSongMinute();
-                      setDirection(0);
-                      setCurrentIndex(randomMinute);
-                      setCurrentViewIndex(randomMinute);
-                    }}
-                    className="text-white font-medium text-sm underline underline-offset-2 hover:text-white/80 transition-colors"
+                {getCurrentSong().spotifyId && (
+                  <a
+                    href={`https://open.spotify.com/track/${getCurrentSong().spotifyId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors"
                   >
-                    Take me to a random song of the minute
-                  </button>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                )}
+                <div className="text-center">
+                  <div className="text-white/90 font-medium mb-1" style={{ textWrap: 'balance', fontSize: getCurrentSong().name.length > 25 ? '0.875rem' : '1.125rem', lineHeight: getCurrentSong().name.length > 25 ? '1.25rem' : '1.75rem' }}>
+                    {getCurrentSong().name}
+                  </div>
+                  <div className="text-white/60 text-sm" style={{ textWrap: 'balance' }}>
+                    {getCurrentSong().artist}
+                  </div>
                 </div>
               </div>
-            ) : (
-              <button
-                onClick={() => onSongCardClick(currentIndex)}
-                className="w-full cursor-pointer"
-              >
-                <div className={`relative backdrop-blur-md border rounded-2xl px-6 py-4 shadow-2xl transition-all duration-200 hover:scale-[1.02] ${
-                  isDarkBackground
-                    ? 'bg-white/8 border-white/20'
-                    : 'bg-white/10 border-white/20'
-                }`}>
-                  {getCurrentSong().spotifyId && (
-                    <a
-                      href={`https://open.spotify.com/track/${getCurrentSong().spotifyId}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="absolute top-3 right-3 text-white/40 hover:text-white/80 transition-colors"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  )}
-                  <div className="text-center">
-                    <div className="text-white/90 font-medium mb-1" style={{ textWrap: 'balance', fontSize: getCurrentSong().name.length > 25 ? '0.875rem' : '1.125rem', lineHeight: getCurrentSong().name.length > 25 ? '1.25rem' : '1.75rem' }}>
-                      {getCurrentSong().name}
-                    </div>
-                    <div className="text-white/60 text-sm" style={{ textWrap: 'balance' }}>
-                      {getCurrentSong().artist}
-                    </div>
-                  </div>
-                </div>
-              </button>
-            )}
+            </button>
           </motion.div>
 
           {/* Right Song Card - Hidden on mobile */}
