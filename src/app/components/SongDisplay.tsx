@@ -27,7 +27,7 @@ export function SongDisplay({
   isDarkBackground,
   onSongCardClick
 }: SongDisplayProps) {
-  const { getSong, getRandomSongMinute } = useSongs();
+  const { getSong, hasSong, findNextSongMinute, getRandomSongMinute, getNearestSongMinute } = useSongs();
 
   const formatMinuteAsTime = (minuteOfDay: number): string => {
     const hours = Math.floor(minuteOfDay / 60);
