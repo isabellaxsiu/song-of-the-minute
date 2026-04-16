@@ -84,14 +84,14 @@ export function SongDisplay({
 
   const handlePrevious = () => {
     setDirection(-1);
-    const newIndex = (currentIndex - 1 + 1440) % 1440;
+    const newIndex = findNextSongMinute(currentIndex, -1);
     setCurrentIndex(newIndex);
     setCurrentViewIndex(newIndex);
   };
 
   const handleNext = () => {
     setDirection(1);
-    const newIndex = (currentIndex + 1) % 1440;
+    const newIndex = findNextSongMinute(currentIndex, 1);
     setCurrentIndex(newIndex);
     setCurrentViewIndex(newIndex);
   };
