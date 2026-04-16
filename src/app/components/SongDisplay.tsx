@@ -130,9 +130,9 @@ export function SongDisplay({
     setCurrentViewIndex(currentIndex);
   }, [currentIndex, setCurrentViewIndex]);
 
-  const getPrevSong = () => getSong((currentIndex - 1 + 1440) % 1440);
+  const getPrevSong = () => getSong(findNextSongMinute(currentIndex, -1));
   const getCurrentSong = () => getSong(currentIndex);
-  const getNextSong = () => getSong((currentIndex + 1) % 1440);
+  const getNextSong = () => getSong(findNextSongMinute(currentIndex, 1));
 
   const slideVariants = {
     enter: (direction: number) => ({
