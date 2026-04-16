@@ -57,8 +57,11 @@ export function SongDisplay({
       const minute = parseInt(minuteStr);
       const minuteOfDay = hour * 60 + minute;
       
-      setCurrentSong(getSong(minuteOfDay));
-      setActualCurrentMinute(minuteOfDay);
+      // Snap to nearest song minute
+      const nearestMinute = getNearestSongMinute(minuteOfDay);
+      setCurrentSong(getSong(nearestMinute));
+      setActualCurrentMinute(nearestMinute);
+      setCurrentIndex(nearestMinute);
     };
 
     updateSong();
