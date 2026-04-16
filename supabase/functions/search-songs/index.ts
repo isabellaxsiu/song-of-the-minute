@@ -19,7 +19,7 @@ async function getSpotifyToken(clientId: string, clientSecret: string): Promise<
 }
 
 async function searchTrack(token: string, query: string): Promise<{ name: string; artist: string; spotify_id: string } | null> {
-  const url = `https://api.spotify.com/v1/search?${new URLSearchParams({ q: query, type: "track", limit: "3" })}`;
+  const url = `https://api.spotify.com/v1/search?${new URLSearchParams({ q: query, type: "track", limit: "5" })}`;
   const resp = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
   
   if (resp.status === 429) {
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { start, end } = await req.json();
+    const { start, end, dryRun } = await req.json();
     if (typeof start !== "number" || typeof end !== "number" || end - start > 30) {
       return new Response(JSON.stringify({ error: "Invalid range (max 30 minutes)" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
@@ -70,11 +70,22 @@ Deno.serve(async (req) => {
       let h12 = h24 > 12 ? h24 - 12 : h24;
       if (h12 === 0) h12 = 12;
       const period = h24 >= 12 ? "pm" : "am";
+      const mnStr = mn.toString().padStart(2, "0");
 
-      let track = await searchTrack(token, `"${h12}:${mn.toString().padStart(2, "0")}${period}"`);
-      if (!track) {
-        await new Promise(r => setTimeout(r, 500));
-        track = await searchTrack(token, `"${h12}:${mn.toString().padStart(2, "0")} ${period.toUpperCase()}"`);
+      // Try multiple search formats
+      const queries = [
+        `"${h12}:${mnStr} ${period}"`,           // "9:05 pm"
+        `"${h12}:${mnStr}${period}"`,             // "9:05pm"
+        `"${h12}:${mnStr} ${period.toUpperCase()}"`, // "9:05 PM"
+        `"${h24}:${mnStr}"`,                      // "21:05" military time
+        `"${h24}${mnStr}"`,                       // "2105" compact military
+      ];
+
+      let track: any = null;
+      for (const q of queries) {
+        track = await searchTrack(token, q);
+        if (track) break;
+        await new Promise(r => setTimeout(r, 200));
       }
 
       if (track) {
@@ -82,16 +93,22 @@ Deno.serve(async (req) => {
       } else {
         notFound.push(minute);
       }
-      await new Promise(r => setTimeout(r, 300));
+      await new Promise(r => setTimeout(r, 200));
     }
 
-    // Insert found songs
-    if (results.length > 0) {
+    // Only insert if not a dry run
+    if (!dryRun && results.length > 0) {
       const { error } = await supabase.from("songs").upsert(results, { onConflict: "minute_of_day" });
       if (error) throw error;
     }
 
-    return new Response(JSON.stringify({ found: results.length, notFound: notFound.length, songs: results.map(r => `${r.minute_of_day}: ${r.name}`), missing: notFound }), {
+    return new Response(JSON.stringify({
+      dryRun: !!dryRun,
+      found: results.length,
+      notFound: notFound.length,
+      songs: results.map(r => `${r.minute_of_day}: ${r.name} — ${r.artist}`),
+      missing: notFound,
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
