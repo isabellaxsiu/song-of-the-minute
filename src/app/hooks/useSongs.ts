@@ -83,6 +83,20 @@ export function useSongs() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version]);
 
+  const hasSong = useCallback((minuteOfDay: number): boolean => {
+    return songCache.has(minuteOfDay);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version]);
+
+  const findNextSongMinute = useCallback((from: number, dir: 1 | -1): number => {
+    for (let i = 1; i <= 1440; i++) {
+      const candidate = ((from + dir * i) % 1440 + 1440) % 1440;
+      if (songCache.has(candidate)) return candidate;
+    }
+    return from;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version]);
+
   const getRandomSongMinute = useCallback((): number => {
     const keys = Array.from(songCache.keys());
     if (keys.length === 0) return 0;
@@ -90,5 +104,18 @@ export function useSongs() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version]);
 
-  return { getSong, getRandomSongMinute };
+  const getNearestSongMinute = useCallback((minuteOfDay: number): number => {
+    if (songCache.has(minuteOfDay)) return minuteOfDay;
+    // Search outward in both directions
+    for (let i = 1; i <= 720; i++) {
+      const fwd = (minuteOfDay + i) % 1440;
+      if (songCache.has(fwd)) return fwd;
+      const bwd = ((minuteOfDay - i) % 1440 + 1440) % 1440;
+      if (songCache.has(bwd)) return bwd;
+    }
+    return minuteOfDay;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version]);
+
+  return { getSong, hasSong, findNextSongMinute, getRandomSongMinute, getNearestSongMinute };
 }
